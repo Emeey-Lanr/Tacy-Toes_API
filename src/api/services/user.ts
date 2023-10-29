@@ -36,22 +36,44 @@ export class UserS {
 
             const emailToken = await TokenGenerator.emailToken()
             
-            const jwtToken = await TokenGenerator.jwtTokenGenerator({ email, emailToken })
+            const jwtToken = await TokenGenerator.jwtTokenGenerator({ email, username,emailToken, }, '1hr')
 
-            const emailToBeSent = await Email.emailVerification(emailToken)
+      
+        //     const emailToBeSent = await Email.emailVerification(`${jwtToken}`,emailToken, email)
             
- 
-             
-            const sendMail =  await UserH.sendEmail(`${emailToken}`, email, `${emailToBeSent}`)
-            if (sendMail instanceof Error) {
-               return new Error("An error occured sending email verification, proceed to login")
-           }
+          
+        //     const sendMail =  await UserH.sendEmail(`${emailToken}`, email, `${emailToBeSent}`)
+        //     if (sendMail instanceof Error) {
+        //        return new Error("An error occured sending email verification, proceed to login")
+        //    }
          
-            return jwtToken
+            return { token: jwtToken, redirectURL:`${`/email/verification/${jwtToken}?email=${email}`}` }
 
         } catch (error:any) {
           
             return new Error('Unable to register user')
+        }
+    }
+    static async verifyEmail(jwtToken:string, emailToken:string[]) {
+        try {
+            let payloadVerificationToken = emailToken[0] + emailToken[1] + emailToken[2] + emailToken[3]
+            const verifyToken = await TokenGenerator.decodeJwt(jwtToken)
+            console.log(verifyToken, payloadVerificationToken)
+            if (verifyToken instanceof Error) {
+                return new Error(verifyToken.message)
+            }
+        
+            if (verifyToken.emailToken !== payloadVerificationToken) {
+                return new Error("Invalid Email Token")
+            }
+            
+            const isVerified = await pool.query("UPDATE user_tb SET is_Verified = $1 WHERE email = $2", [true, verifyToken.email])
+            const generateToken = await TokenGenerator.jwtTokenGenerator({ userEmail: verifyToken.email, username:verifyToken.username }, '7days')
+            
+            return { token: generateToken, username: verifyToken.username }
+
+        } catch (error:any) {
+         return new Error("An error occured");
         }
     }
 }

@@ -8,7 +8,6 @@ const pg_1 = __importDefault(require("pg"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const pg = pg_1.default.Pool;
-console.log(process.env.DB_HOST, "LKJFDS");
 exports.pool = new pg({
     user: `${process.env.DB_USER}`,
     host: `${process.env.DB_HOST}`,

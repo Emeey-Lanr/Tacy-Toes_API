@@ -9,9 +9,31 @@ export const signupC = async (req: Request, res: Response) => {
         if (registerUser instanceof Error) {
             return errorResponse(res, 400, registerUser.message)
         }
-        return succesResponse(res, 201, {token:registerUser},'Registartion Sucessfull')
+        return succesResponse(res, 201, registerUser,'Registartion Sucessfull')
     } catch (error:any) {
          return errorResponse(res, 400, error.message);
+    }
+    
+}
+
+export const signinC = async (req: Request, res:Response) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
+export const verifyEmail = async (req: Request, res: Response) => {
+    try {
+    
+        const verification = await UserS.verifyEmail(`${req.params.id}`, req.body.token)
+        if (verification instanceof Error) {
+            return errorResponse(res, 404, verification.message)
+        }
+        return succesResponse(res, 200, verification, 'Verification Successful' )
+    } catch (error) {
+         return errorResponse(res, 404, "An error during verification");
     }
     
 }

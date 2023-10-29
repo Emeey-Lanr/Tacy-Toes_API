@@ -16,23 +16,19 @@ exports.UserH = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = require("../../config/db");
 const nodemailer_1 = __importDefault(require("nodemailer"));
-console.log(process.env.DB_HOST, "LKJFDS");
 class UserH {
     static userExist(columnName, data) {
         return __awaiter(this, void 0, void 0, function* () {
             // two username should exit, same goes for email also
             try {
-                console.log(columnName, data);
                 const query = `SELECT email FROM user_tb WHERE ${columnName} = $1`;
                 const checkIfQuery = yield db_1.pool.query(`${query}`, [data]);
-                console.log(checkIfQuery);
                 if (checkIfQuery.rows.length > 0) {
                     return true;
                 }
                 return false;
             }
             catch (error) {
-                console.log(error.message);
                 return new Error(error.message);
             }
         });
@@ -44,7 +40,6 @@ class UserH {
                 return passwordHashing;
             }
             catch (error) {
-                console.log(error.message);
                 return new Error("Unable to hash password");
             }
         });
@@ -69,7 +64,6 @@ class UserH {
                 const sendMail = yield transporter.sendMail(mailOption);
             }
             catch (error) {
-                console.log(error.message);
                 return new Error("An error occured, couldn't send email");
             }
         });

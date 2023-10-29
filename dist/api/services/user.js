@@ -13,17 +13,13 @@ exports.UserS = void 0;
 const db_1 = require("../../config/db");
 const user_1 = require("../helpers/user");
 const token_generator_1 = require("../utils/token.generator");
-const email_1 = require("../utils/email");
-console.log(process.env.DB_HOST, "LKJFDS");
 class UserS {
     static signup(body) {
         return __awaiter(this, void 0, void 0, function* () {
             const { username, email, phone_number, password } = body;
             try {
-                console.log(email, username, password, phone_number, "na your dat be this");
                 const checkEmail = yield user_1.UserH.userExist('email', `${email}`);
                 const checkUsername = yield user_1.UserH.userExist('username', `${username}`);
-                console.log(checkEmail, checkUsername);
                 if (checkEmail instanceof Error) {
                     return new Error(checkEmail.message);
                 }
@@ -44,18 +40,37 @@ class UserS {
                     `${username === 'Emeey_Lanr' ? 'year' : 'none'}`,
                 ]);
                 const emailToken = yield token_generator_1.TokenGenerator.emailToken();
-                const jwtToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ email, emailToken });
-                const emailToBeSent = yield email_1.Email.emailVerification(emailToken);
-                console.log(emailToken, jwtToken, emailToBeSent, "yo");
-                const sendMail = yield user_1.UserH.sendEmail(`${emailToken}`, email, `${emailToBeSent}`);
-                if (sendMail instanceof Error) {
-                    return new Error("An error occured sending email verification, proceed to login");
-                }
-                return jwtToken;
+                const jwtToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ email, username, emailToken, }, '1hr');
+                //     const emailToBeSent = await Email.emailVerification(`${jwtToken}`,emailToken, email)
+                //     const sendMail =  await UserH.sendEmail(`${emailToken}`, email, `${emailToBeSent}`)
+                //     if (sendMail instanceof Error) {
+                //        return new Error("An error occured sending email verification, proceed to login")
+                //    }
+                return { token: jwtToken, redirectURL: `${`/email/verification/${jwtToken}?email=${email}`}` };
             }
             catch (error) {
-                console.log(error.message);
                 return new Error('Unable to register user');
+            }
+        });
+    }
+    static verifyEmail(jwtToken, emailToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let payloadVerificationToken = emailToken[0] + emailToken[1] + emailToken[2] + emailToken[3];
+                const verifyToken = yield token_generator_1.TokenGenerator.decodeJwt(jwtToken);
+                console.log(verifyToken, payloadVerificationToken);
+                if (verifyToken instanceof Error) {
+                    return new Error(verifyToken.message);
+                }
+                if (verifyToken.emailToken !== payloadVerificationToken) {
+                    return new Error("Invalid Email Token");
+                }
+                const isVerified = yield db_1.pool.query("UPDATE user_tb SET is_Verified = $1 WHERE email = $2", [true, verifyToken.email]);
+                const generateToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ userEmail: verifyToken.email, username: verifyToken.username }, '7days');
+                return { token: generateToken, username: verifyToken.username };
+            }
+            catch (error) {
+                return new Error("An error occured");
             }
         });
     }

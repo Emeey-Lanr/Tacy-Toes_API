@@ -18,3 +18,4 @@ const controllers_1 = require("../controllers");
  *          description:success
  */
 exports.userRoute.post("/signup", user_validation_1.userValidation.signup, controllers_1.userC.signupC);
+exports.userRoute.put("/verify/email/:id", controllers_1.userC.verifyEmail);

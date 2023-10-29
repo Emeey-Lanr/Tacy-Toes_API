@@ -15,13 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenGenerator = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class TokenGenerator {
-    static jwtTokenGenerator(the_token) {
+    static jwtTokenGenerator(the_token, expiringTime) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const generatedToken = yield jsonwebtoken_1.default.sign({ data: the_token }, `${process.env.JWT_SECRET}`, { expiresIn: "1hr" });
+                const generatedToken = yield jsonwebtoken_1.default.sign({ data: the_token }, `${process.env.JWT_SECRET}`, { expiresIn: `${expiringTime}` });
                 return generatedToken;
             }
             catch (error) {
+                return new Error("unable to generate token");
+            }
+        });
+    }
+    static decodeJwt(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data } = yield jsonwebtoken_1.default.verify(token, `${process.env.JWT_SECRET}`);
+                return data;
+            }
+            catch (error) {
+                return new Error("Invalid Token");
             }
         });
     }

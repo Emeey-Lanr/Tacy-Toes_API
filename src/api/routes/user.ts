@@ -1,7 +1,7 @@
 import express from "express"
 export const userRoute = express.Router()
 import { userValidation } from "../validations/user.validation"
-import { userC } from "../controllers"
+import { userC } from "../controllers/index.user"
 
 /**
  * @tacky
@@ -13,3 +13,5 @@ import { userC } from "../controllers"
  *          description:success
  */
 userRoute.post("/signup", userValidation.signup, userC.signupC)
+userRoute.post("/signin", userC.signinC)
+userRoute.put("/verify/email/:id", userC.verifyEmail)

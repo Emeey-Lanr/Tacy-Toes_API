@@ -9,20 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signupC = void 0;
+exports.verifyEmail = exports.signupC = void 0;
 const user_1 = require("../services/user");
 const response_1 = require("../utils/response");
-console.log(process.env.DB_HOST, "LKJFDS");
 const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const registerUser = yield user_1.UserS.signup(req.body);
         if (registerUser instanceof Error) {
             return (0, response_1.errorResponse)(res, 400, registerUser.message);
         }
-        return (0, response_1.succesResponse)(res, 201, { token: registerUser }, 'Registartion Sucessfull');
+        return (0, response_1.succesResponse)(res, 201, registerUser, 'Registartion Sucessfull');
     }
     catch (error) {
         return (0, response_1.errorResponse)(res, 400, error.message);
     }
 });
 exports.signupC = signupC;
+const verifyEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const verification = yield user_1.UserS.verifyEmail(`${req.params.id}`, req.body.token);
+        if (verification instanceof Error) {
+            return (0, response_1.errorResponse)(res, 404, verification.message);
+        }
+        return (0, response_1.succesResponse)(res, 200, verification, 'Verification Successful');
+    }
+    catch (error) {
+        return (0, response_1.errorResponse)(res, 404, "An error during verification");
+    }
+});
+exports.verifyEmail = verifyEmail;
