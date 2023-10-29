@@ -18,9 +18,13 @@ export const signupC = async (req: Request, res: Response) => {
 
 export const signinC = async (req: Request, res:Response) => {
     try {
-        
-    } catch (error) {
-        
+        const loginUser = await UserS.signin(req.body) 
+        if (loginUser instanceof Error) {
+             return errorResponse(res, 400, loginUser.message);
+        }
+         return succesResponse(res, 201, loginUser, 'Valid Crendetials')
+    } catch (error:any) {
+           return errorResponse(res, 400, error.message);
     }
 }
 

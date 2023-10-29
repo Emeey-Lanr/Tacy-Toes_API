@@ -29,6 +29,25 @@ export class UserH {
         } 
         
     }
+    static async verifyPassword(password:string, hashedPassword:string) {
+      
+          const verifiedPassword = await brcypt.compare(password, hashedPassword)
+         return verifiedPassword
+        
+    }
+    static async checkIfEmailOrUsername(emailUsername:string) {
+        
+            let type = ''
+           
+            const check = emailUsername.split("@")
+          
+            if (check.length > 1) {
+               return  type = 'email'
+            }
+          return  type = 'username'
+         
+       
+    }
     static async sendEmail(token: string, userEmail: string, email:string) {
         
         try {

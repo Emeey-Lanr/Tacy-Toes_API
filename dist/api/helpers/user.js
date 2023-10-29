@@ -44,6 +44,22 @@ class UserH {
             }
         });
     }
+    static verifyPassword(password, hashedPassword) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const verifiedPassword = yield bcryptjs_1.default.compare(password, hashedPassword);
+            return verifiedPassword;
+        });
+    }
+    static checkIfEmailOrUsername(emailUsername) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let type = '';
+            const check = emailUsername.split("@");
+            if (check.length > 1) {
+                return type = 'email';
+            }
+            return type = 'username';
+        });
+    }
     static sendEmail(token, userEmail, email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

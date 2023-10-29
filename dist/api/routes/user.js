@@ -7,7 +7,7 @@ exports.userRoute = void 0;
 const express_1 = __importDefault(require("express"));
 exports.userRoute = express_1.default.Router();
 const user_validation_1 = require("../validations/user.validation");
-const controllers_1 = require("../controllers");
+const index_user_1 = require("../controllers/index.user");
 /**
  * @tacky
  *  /signup:
@@ -17,5 +17,6 @@ const controllers_1 = require("../controllers");
  *        200:
  *          description:success
  */
-exports.userRoute.post("/signup", user_validation_1.userValidation.signup, controllers_1.userC.signupC);
-exports.userRoute.put("/verify/email/:id", controllers_1.userC.verifyEmail);
+exports.userRoute.post("/signup", user_validation_1.userValidation.signup, index_user_1.userC.signupC);
+exports.userRoute.post("/signin", index_user_1.userC.signinC);
+exports.userRoute.put("/verify/email/:id", index_user_1.userC.verifyEmail);

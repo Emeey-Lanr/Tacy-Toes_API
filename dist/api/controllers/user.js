@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyEmail = exports.signupC = void 0;
+exports.verifyEmail = exports.signinC = exports.signupC = void 0;
 const user_1 = require("../services/user");
 const response_1 = require("../utils/response");
 const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -25,6 +25,19 @@ const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.signupC = signupC;
+const signinC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const loginUser = yield user_1.UserS.signin(req.body);
+        if (loginUser instanceof Error) {
+            return (0, response_1.errorResponse)(res, 400, loginUser.message);
+        }
+        return (0, response_1.succesResponse)(res, 201, loginUser, 'Valid Crendetials');
+    }
+    catch (error) {
+        return (0, response_1.errorResponse)(res, 400, error.message);
+    }
+});
+exports.signinC = signinC;
 const verifyEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const verification = yield user_1.UserS.verifyEmail(`${req.params.id}`, req.body.token);
