@@ -87,7 +87,7 @@ export class UserS {
           }
           
             const emailToken = await TokenGenerator.emailToken();
-         let tokenDetails = !validateUsernameEmail.rows[0].is_verified
+         let tokenDetails = validateUsernameEmail.rows[0].is_verified
            ? {
                email: validateUsernameEmail.rows[0].email,
                username: validateUsernameEmail.rows[0].username,
@@ -97,7 +97,7 @@ export class UserS {
                  username: validateUsernameEmail.rows[0].username,
                   emailToken
              };
-            const jwtToken = await TokenGenerator.jwtTokenGenerator( tokenDetails, "1hr" );
+            const jwtToken = await TokenGenerator.jwtTokenGenerator( tokenDetails, `${validateUsernameEmail.rows[0].is_verified ? '7days' : '1hr'}` );
 
 
           if (!validateUsernameEmail.rows[0].is_verified) {
@@ -156,5 +156,23 @@ export class UserS {
     } catch (error: any) {
       return new Error("An error occured");
     }
+  }
+    static async getUserDetails(id:string, token:string) {
+        try {
+            const verifyToken = await TokenGenerator.decodeJwt(token)
+            if (verifyToken instanceof Error) {
+                return new Error(verifyToken.message)
+            }
+         
+            if (verifyToken.username !== id) {
+                return new Error("Acess not allowed")
+            }
+            const userInfo  = await pool.query("SELECT * FROM user_tb WHERE username = $1", [verifyToken.username])
+            const allGamesCreated = await pool.query("SELECT * FROM game_tb WHERE creator_username = $1", [verifyToken.username])
+            return {userInfo: userInfo.rows[0], allGamesCreatedInfo:allGamesCreated.rows}
+        } catch (error) {
+            return new Error("An error occured")
+        }
+      
   }
 }

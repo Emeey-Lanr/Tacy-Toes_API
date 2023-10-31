@@ -70,7 +70,7 @@ class UserS {
                     return new Error("Invalid Password");
                 }
                 const emailToken = yield token_generator_1.TokenGenerator.emailToken();
-                let tokenDetails = !validateUsernameEmail.rows[0].is_verified
+                let tokenDetails = validateUsernameEmail.rows[0].is_verified
                     ? {
                         email: validateUsernameEmail.rows[0].email,
                         username: validateUsernameEmail.rows[0].username,
@@ -80,7 +80,7 @@ class UserS {
                         username: validateUsernameEmail.rows[0].username,
                         emailToken
                     };
-                const jwtToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator(tokenDetails, "1hr");
+                const jwtToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator(tokenDetails, `${validateUsernameEmail.rows[0].is_verified ? '7days' : '1hr'}`);
                 if (!validateUsernameEmail.rows[0].is_verified) {
                     const emailToBeSent = yield email_1.Email.emailVerification(`${jwtToken}`, emailToken, `${validateUsernameEmail.rows[0].email}`);
                     const sendMail = yield user_1.UserH.sendEmail(`${emailToken}`, `${validateUsernameEmail.rows[0].email}`, `${emailToBeSent}`);
@@ -118,6 +118,25 @@ class UserS {
                 const isVerified = yield db_1.pool.query("UPDATE user_tb SET is_Verified = $1 WHERE email = $2", [true, verifyToken.email]);
                 const generateToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ userEmail: verifyToken.email, username: verifyToken.username }, "7days");
                 return { token: generateToken, username: verifyToken.username };
+            }
+            catch (error) {
+                return new Error("An error occured");
+            }
+        });
+    }
+    static getUserDetails(id, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const verifyToken = yield token_generator_1.TokenGenerator.decodeJwt(token);
+                if (verifyToken instanceof Error) {
+                    return new Error(verifyToken.message);
+                }
+                if (verifyToken.username !== id) {
+                    return new Error("Acess not allowed");
+                }
+                const userInfo = yield db_1.pool.query("SELECT * FROM user_tb WHERE username = $1", [verifyToken.username]);
+                const allGamesCreated = yield db_1.pool.query("SELECT * FROM game_tb WHERE creator_username = $1", [verifyToken.username]);
+                return { userInfo: userInfo.rows[0], allGamesCreatedInfo: allGamesCreated.rows };
             }
             catch (error) {
                 return new Error("An error occured");

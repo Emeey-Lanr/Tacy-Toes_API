@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyEmail = exports.signinC = exports.signupC = void 0;
+exports.getUserDetails = exports.verifyEmail = exports.signinC = exports.signupC = void 0;
 const user_1 = require("../services/user");
 const response_1 = require("../utils/response");
 const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,3 +51,17 @@ const verifyEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.verifyEmail = verifyEmail;
+const getUserDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const userDetails = yield user_1.UserS.getUserDetails(req.params.id, `${(_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1]}`);
+        if (userDetails instanceof Error) {
+            return (0, response_1.errorResponse)(res, 404, userDetails.message);
+        }
+        return (0, response_1.succesResponse)(res, 200, userDetails, 'Verification Succesfull');
+    }
+    catch (error) {
+        return (0, response_1.errorResponse)(res, 404, "An error occured, fetching user's data");
+    }
+});
+exports.getUserDetails = getUserDetails;

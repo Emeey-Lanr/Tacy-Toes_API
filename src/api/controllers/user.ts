@@ -41,3 +41,19 @@ export const verifyEmail = async (req: Request, res: Response) => {
     }
     
 }
+
+export const getUserDetails = async (req:Request, res:Response) => {
+    try {
+        const userDetails = await UserS.getUserDetails(
+          req.params.id,
+          `${req.headers.authorization?.split(" ")[1]}`
+        );
+        if (userDetails instanceof Error) {
+             return errorResponse(res, 404, userDetails.message);
+        }
+     return succesResponse(res, 200, userDetails, 'Verification Succesfull')
+        
+    } catch (error) {
+           return errorResponse(res, 404, "An error occured, fetching user's data");
+    }
+}

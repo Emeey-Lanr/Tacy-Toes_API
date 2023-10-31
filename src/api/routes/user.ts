@@ -14,4 +14,5 @@ import { userC } from "../controllers/index.user"
  */
 userRoute.post("/signup", userValidation.signup, userC.signupC)
 userRoute.post("/signin", userC.signinC)
+userRoute.get("/getUser/:id", userC.getUserDetails )
 userRoute.put("/verify/email/:id", userC.verifyEmail)
