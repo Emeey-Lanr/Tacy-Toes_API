@@ -167,12 +167,30 @@ export class UserS {
             if (verifyToken.username !== id) {
                 return new Error("Acess not allowed")
             }
-            const userInfo  = await pool.query("SELECT * FROM user_tb WHERE username = $1", [verifyToken.username])
+            const userInfo  = await pool.query("SELECT  id, email, username, phone_number, img_url, is_verified, has_paid, payment_type FROM user_tb WHERE username = $1", [verifyToken.username])
             const allGamesCreated = await pool.query("SELECT * FROM game_tb WHERE creator_username = $1", [verifyToken.username])
             return {userInfo: userInfo.rows[0], allGamesCreatedInfo:allGamesCreated.rows}
         } catch (error) {
             return new Error("An error occured")
         }
       
+  }
+
+  static async changePassword(old_password: string, new_password: string, email: string) {
+  try {
+     const oldPassword = await pool.query("SELECT password FROM user_tb WHERE email = $1", [email])
+      
+    const validatePassword = await UserH.verifyPassword(old_password, oldPassword.rows[0].password)
+    if (!validatePassword) {
+          return new Error("Invalid Password")
+    }
+    const hashNewPassword = await UserH.hashPassword(new_password)
+    const updatePassword = await pool.query("UPDATE user_tb SET password = $1 WHERE email = $2", [hashNewPassword, email])
+  
+  } catch (error) {
+    console.log(error)
+     return new Error("An error occured")
+  }
+    
   }
 }

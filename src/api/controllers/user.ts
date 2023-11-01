@@ -54,6 +54,21 @@ export const getUserDetails = async (req:Request, res:Response) => {
      return succesResponse(res, 200, userDetails, 'Verification Succesfull')
         
     } catch (error) {
-           return errorResponse(res, 404, "An error occured, fetching user's data");
+           return errorResponse(res, 404, "An error occured fetching user's data");
     }
+}
+
+export const changePassword = async (req: Request, res: Response) => {
+    const {old_password, new_password, email} = req.body
+    try {
+     console.log(req.body)
+        const changeUserPassword = await UserS.changePassword(old_password, new_password, email)
+        if (changeUserPassword instanceof Error) {
+            return  errorResponse(res, 404, changeUserPassword.message)
+        }
+        return succesResponse(res, 200, "", "Password Updated Successfully")
+    } catch (error) {
+        console.log(error)
+     return errorResponse(res, 404, "An error occured updating user's password");
+ }   
 }

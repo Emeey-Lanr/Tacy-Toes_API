@@ -21,3 +21,4 @@ exports.userRoute.post("/signup", user_validation_1.userValidation.signup, index
 exports.userRoute.post("/signin", index_user_1.userC.signinC);
 exports.userRoute.get("/getUser/:id", index_user_1.userC.getUserDetails);
 exports.userRoute.put("/verify/email/:id", index_user_1.userC.verifyEmail);
+exports.userRoute.put("/changePassword", index_user_1.userC.changePassword);

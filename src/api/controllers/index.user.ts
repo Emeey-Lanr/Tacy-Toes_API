@@ -1,7 +1,8 @@
-import { signupC,signinC, verifyEmail, getUserDetails } from "./user";
+import { signupC,signinC, verifyEmail, getUserDetails, changePassword } from "./user";
 export const userC = {
     signupC,
     signinC,
     verifyEmail,
-    getUserDetails
+    getUserDetails,
+    changePassword
 }

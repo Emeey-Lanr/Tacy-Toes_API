@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserDetails = exports.verifyEmail = exports.signinC = exports.signupC = void 0;
+exports.changePassword = exports.getUserDetails = exports.verifyEmail = exports.signinC = exports.signupC = void 0;
 const user_1 = require("../services/user");
 const response_1 = require("../utils/response");
 const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,7 +61,23 @@ const getUserDetails = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return (0, response_1.succesResponse)(res, 200, userDetails, 'Verification Succesfull');
     }
     catch (error) {
-        return (0, response_1.errorResponse)(res, 404, "An error occured, fetching user's data");
+        return (0, response_1.errorResponse)(res, 404, "An error occured fetching user's data");
     }
 });
 exports.getUserDetails = getUserDetails;
+const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { old_password, new_password, email } = req.body;
+    try {
+        console.log(req.body);
+        const changeUserPassword = yield user_1.UserS.changePassword(old_password, new_password, email);
+        if (changeUserPassword instanceof Error) {
+            return (0, response_1.errorResponse)(res, 404, changeUserPassword.message);
+        }
+        return (0, response_1.succesResponse)(res, 200, "", "Password Updated Successfully");
+    }
+    catch (error) {
+        console.log(error);
+        return (0, response_1.errorResponse)(res, 404, "An error occured updating user's password");
+    }
+});
+exports.changePassword = changePassword;

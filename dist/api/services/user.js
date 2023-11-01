@@ -134,11 +134,28 @@ class UserS {
                 if (verifyToken.username !== id) {
                     return new Error("Acess not allowed");
                 }
-                const userInfo = yield db_1.pool.query("SELECT * FROM user_tb WHERE username = $1", [verifyToken.username]);
+                const userInfo = yield db_1.pool.query("SELECT  id, email, username, phone_number, img_url, is_verified, has_paid, payment_type FROM user_tb WHERE username = $1", [verifyToken.username]);
                 const allGamesCreated = yield db_1.pool.query("SELECT * FROM game_tb WHERE creator_username = $1", [verifyToken.username]);
                 return { userInfo: userInfo.rows[0], allGamesCreatedInfo: allGamesCreated.rows };
             }
             catch (error) {
+                return new Error("An error occured");
+            }
+        });
+    }
+    static changePassword(old_password, new_password, email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const oldPassword = yield db_1.pool.query("SELECT password FROM user_tb WHERE email = $1", [email]);
+                const validatePassword = yield user_1.UserH.verifyPassword(old_password, oldPassword.rows[0].password);
+                if (!validatePassword) {
+                    return new Error("Invalid Password");
+                }
+                const hashNewPassword = yield user_1.UserH.hashPassword(new_password);
+                const updatePassword = yield db_1.pool.query("UPDATE user_tb SET password = $1 WHERE email = $2", [hashNewPassword, email]);
+            }
+            catch (error) {
+                console.log(error);
                 return new Error("An error occured");
             }
         });
