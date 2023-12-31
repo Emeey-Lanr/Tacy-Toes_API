@@ -8,11 +8,13 @@ const express_1 = __importDefault(require("express"));
 const user_1 = require("../routes/user");
 const cors_1 = __importDefault(require("cors"));
 const game_1 = require("../routes/game");
+const play_game_1 = require("../routes/play.game");
 const middleWare = (app) => {
     app.use((0, cors_1.default)());
     app.use(express_1.default.urlencoded({ extended: true }));
     app.use(express_1.default.json());
     app.use("/user", user_1.userRoute);
     app.use("/game", game_1.gameRoute);
+    app.use("/play/game", play_game_1.playGameRoute);
 };
 exports.middleWare = middleWare;

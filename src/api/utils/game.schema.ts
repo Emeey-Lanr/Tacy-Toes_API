@@ -1,5 +1,7 @@
 import Joi from "joi";
-const gameSignup = Joi.object({
-    
-
-})
+export const createGame = Joi.object({
+  game_name: Joi.string().required(),
+  player_username:Joi.string().required(),
+  email:  Joi.string().email().required(),
+  username: Joi.string().required(),
+});

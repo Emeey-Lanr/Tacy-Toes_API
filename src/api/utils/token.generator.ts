@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import uniqid from "uniqid"
 
 export  class TokenGenerator {
   static async jwtTokenGenerator(the_token: any, expiringTime:string) {
@@ -31,5 +32,8 @@ export  class TokenGenerator {
            String(Math.floor(Math.random() * 10)) +
             String(Math.floor(Math.random() * 10));
         return token
-    }
+  }
+  static async gameId(username:string) {
+     return uniqid (`${username}`)
+  }
 }

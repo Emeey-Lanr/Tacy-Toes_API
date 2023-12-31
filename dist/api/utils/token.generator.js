@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenGenerator = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const uniqid_1 = __importDefault(require("uniqid"));
 class TokenGenerator {
     static jwtTokenGenerator(the_token, expiringTime) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -44,6 +45,11 @@ class TokenGenerator {
                 String(Math.floor(Math.random() * 10)) +
                 String(Math.floor(Math.random() * 10));
             return token;
+        });
+    }
+    static gameId(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, uniqid_1.default)(`${username}`);
         });
     }
 }
