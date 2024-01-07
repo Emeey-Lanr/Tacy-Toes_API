@@ -5,6 +5,9 @@ export interface GameDetails_I {
     creatorVersusId: string;
     creatorScore: number;
     versusScore: number;
+    creatorSymbol: string,
+    versusSymbol: string,
+    round:number,
     game: string[];
     joined: string[];
 }

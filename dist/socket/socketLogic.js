@@ -4,7 +4,7 @@ exports.SocketLogicF = exports.gameBox = void 0;
 exports.gameBox = [];
 class SocketLogicF {
     static addUser(data) {
-        const gameCreatorId = data.gameDetails.gameid + data.gameDetails.player_username;
+        const gameCreatorId = data.gameDetails.game_id + data.gameDetails.player_username;
         let someOneJoinedBefore = -1;
         //0 means we are just creating a registration
         //1 means someonw has joined before 
@@ -12,6 +12,9 @@ class SocketLogicF {
             creator: data.gameDetails.creator_username,
             versus: data.gameDetails.player_username,
             creatorScore: 0,
+            creatorSymbol: "X",
+            versusSymbol: "O",
+            round: 1,
             versusScore: 0,
             gameId: data.gameDetails.game_id,
             creatorVersusId: `${gameCreatorId}`,
@@ -37,6 +40,15 @@ class SocketLogicF {
             exports.gameBox.push(gameBoxDetails);
         }
         return { statusNumber: someOneJoinedBefore, whoHasJoined: exports.gameBox.filter((value) => value.creatorVersusId === gameCreatorId)[0].joined };
+    }
+    static FindGameToStart(creator, versus, gameId) {
+        let error = false;
+        let gameData = exports.gameBox.find((value) => value.creator === creator && value.versus === versus && value.gameId === gameId);
+        if (!gameData) {
+            error = true;
+            return { error };
+        }
+        return { gameData, error };
     }
 }
 exports.SocketLogicF = SocketLogicF;
