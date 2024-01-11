@@ -42,6 +42,21 @@ io.on("connection", (socket) => {
             io.sockets.to(`${startId}`).emit("changePhase", { start: true, gameInfo: gameDetails });
         }
     });
+    socket.on("playGame", (data) => {
+        const { signatureSign, arrayPositionId, isOwner, creator, versus, socketId, gameId } = data;
+        const game = socketLogic_1.SocketLogicF.playGame(isOwner, creator, versus, gameId, arrayPositionId, signatureSign);
+        console.log(game);
+        // meaning no winner has occured, cause it only changes from
+        // null to either true or false, and if it's false
+        // if it's true there a winner,
+        // if it's false, that means all boxes and that's a draw
+        if ((game === null || game === void 0 ? void 0 : game.checkIfWinner.winner) === null) {
+            io.sockets.to(socketId).emit("continueGame", { gameInfo: game.userCurrentGame, winnerChecker: game.checkIfWinner });
+        }
+        else {
+            io.sockets.to(socketId).emit("checkWinnerDraw", { gameInfo: game === null || game === void 0 ? void 0 : game.userCurrentGame, winnerChecker: game === null || game === void 0 ? void 0 : game.checkIfWinner });
+        }
+    });
     socket.on("disconnect", () => {
         // console.log("someone disconnected")
     });

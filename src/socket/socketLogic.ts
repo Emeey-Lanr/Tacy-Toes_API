@@ -1,3 +1,5 @@
+import { PlayGameS } from "../api/services/play.game";
+import { gameWinnerCheckerF } from "./socket.helper";
 import { GameDetails_I } from "./socket.interface"
 export const gameBox: GameDetails_I[] = []
 
@@ -19,6 +21,7 @@ export class SocketLogicF {
             gameId: data.gameDetails.game_id,
             creatorVersusId: `${gameCreatorId}`,
             game:['A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
+            whoPlayedLast:[],
             joined: [data.isOwner ? `${data.gameDetails.creator_username}` : `${data.gameDetails.player_username}`]
         } 
 
@@ -55,6 +58,58 @@ export class SocketLogicF {
         } 
 
         return { gameData, error };
+    }
+
+    static playGame(isOwner:number, creator:string, versus:string, gameId:string, arrayPositionId:number, signatureSign:string ) {
+        console.log(isOwner, creator, versus, gameId, arrayPositionId, signatureSign)
+        // find the game
+        let userCurrentGame = gameBox.find((value)=> value.creator === creator && value.versus === versus && value.gameId === gameId )
+        //  creator = 0
+        // versus = 1
+        if (userCurrentGame) {
+            userCurrentGame.game[arrayPositionId] = signatureSign
+            userCurrentGame.whoPlayedLast.push(signatureSign)
+            let checkIfWinner = gameWinnerCheckerF(userCurrentGame.game)
+            if (!checkIfWinner.canCheckWinner) {
+                return {userCurrentGame, checkIfWinner}
+            }
+             
+            // Winner of no winner at the end of  the game
+            
+            let neSetGame =  ["A","B","C","D","E","F","G","H","I", ]
+            // if there is a winner
+            if (checkIfWinner.winner !== null && checkIfWinner.winner) {
+                userCurrentGame.creatorScore = isOwner === 0 ? userCurrentGame.creatorScore + 1 : userCurrentGame.creatorScore
+                userCurrentGame.versusScore = isOwner === 1 ? userCurrentGame.versusScore + 1 : userCurrentGame.versusScore
+                userCurrentGame.round = userCurrentGame.round + 1 
+
+                // we changed who last played to an empty array
+                userCurrentGame.whoPlayedLast = []
+                // an replace game with new sets
+                userCurrentGame.game = neSetGame;
+               
+
+            } else if (checkIfWinner.winner !== null && checkIfWinner.winner === false) {
+              // if all the boxes have been filled, meaning nobody has won
+                userCurrentGame.round = userCurrentGame.round + 1 
+           
+               
+              // we changed who last played to an empty array
+              userCurrentGame.whoPlayedLast = [];
+              // an replace game with new sets
+              userCurrentGame.game = neSetGame;
+            }
+                  // 5 -1 = 4 rounds played
+            if (userCurrentGame.round  === 5) {
+                PlayGameS.saveGame(userCurrentGame.creatorScore, userCurrentGame.versusScore, userCurrentGame.gameId).then((result) => {
+                    return { userCurrentGame, checkIfWinner };
+               })
+            }
+               
+
+            return { userCurrentGame, checkIfWinner}
+            
+        }
     }
 }
 

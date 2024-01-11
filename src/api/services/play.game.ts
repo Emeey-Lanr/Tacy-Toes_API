@@ -27,6 +27,9 @@ export  class PlayGameS {
             if (checkifGameExist.rows.length < 1) {
                 return new Error("Invalid Game Link, Game Doesn't exist")
             }
+            if (checkifGameExist.rows[0].played) {
+                return new Error("Game Played Already, Create a New Game")
+            }
 
             return {isOwner, gameDetails:checkifGameExist.rows[0]}
 
@@ -36,5 +39,15 @@ export  class PlayGameS {
             return new Error(error.message)
         }
         
+    }
+
+    static async saveGame(creatorScore:number, versusScore:number, gameId:string) {
+       try {
+        const updateGame = await pool.query("UPDATE game_tb SET creator_score = $1, player_score = $2, played = $3 WHERE game_id = $4", [creatorScore, versusScore, true, gameId])
+           return true
+           
+       } catch (error) {
+        
+       }
     }
 }

@@ -5,6 +5,7 @@ import {Server, Socket} from "socket.io"
 import { middleWare } from "./api/middlewares/user";
 import { SocketLogicF } from "./socket/socketLogic";
 import { TokenGenerator } from "./api/utils/token.generator";
+import { playGameClientData } from "./socket/socket.interface";
 
 dotenv.config()
 
@@ -38,7 +39,7 @@ io.on("connection", (socket: Socket) => {
         }
     
     
-})
+    })
 
     socket.on("navigateToStartGame", (data: any) => {
         const { creator, versus, gameId, startId } = data;
@@ -48,12 +49,23 @@ io.on("connection", (socket: Socket) => {
         if (!gameDetails.error) {
             console.log(gameDetails.gameData)
           io.sockets.to(`${startId}`).emit("changePhase", { start: true, gameInfo:gameDetails });
-        }
-   
+        }  
+     });
 
-   
-  
-});
+    socket.on("playGame", (data:playGameClientData) => {
+        const { signatureSign, arrayPositionId, isOwner, creator, versus, socketId, gameId } = data
+        const game = SocketLogicF.playGame(isOwner, creator, versus, gameId, arrayPositionId, signatureSign)
+            console.log(game)
+             // meaning no winner has occured, cause it only changes from
+            // null to either true or false, and if it's false
+            // if it's true there a winner,
+            // if it's false, that means all boxes and that's a draw
+        if (game?.checkIfWinner.winner === null) {
+            io.sockets.to(socketId).emit("continueGame", { gameInfo: game.userCurrentGame,winnerChecker:game.checkIfWinner })
+        } else {
+            io.sockets.to(socketId).emit("checkWinnerDraw",  { gameInfo: game?.userCurrentGame, winnerChecker:game?.checkIfWinner  })
+        }
+     })
    
 
   

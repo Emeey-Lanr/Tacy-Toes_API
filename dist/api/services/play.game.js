@@ -36,11 +36,24 @@ class PlayGameS {
                 if (checkifGameExist.rows.length < 1) {
                     return new Error("Invalid Game Link, Game Doesn't exist");
                 }
+                if (checkifGameExist.rows[0].played) {
+                    return new Error("Game Played Already, Create a New Game");
+                }
                 return { isOwner, gameDetails: checkifGameExist.rows[0] };
             }
             catch (error) {
                 console.log(error);
                 return new Error(error.message);
+            }
+        });
+    }
+    static saveGame(creatorScore, versusScore, gameId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updateGame = yield db_1.pool.query("UPDATE game_tb SET creator_score = $1, player_score = $2, played = $3 WHERE game_id = $4", [creatorScore, versusScore, true, gameId]);
+                return true;
+            }
+            catch (error) {
             }
         });
     }

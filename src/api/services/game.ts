@@ -54,5 +54,6 @@ export class GAMES {
         } catch (error:any) {
             return new Error(`${error.message}`)
         }
+        
     }
 }
