@@ -169,7 +169,8 @@ export class UserS {
             }
             const userInfo  = await pool.query("SELECT  id, email, username, phone_number, img_url, is_verified, has_paid, payment_type FROM user_tb WHERE username = $1", [verifyToken.username])
             const allGamesCreated = await pool.query("SELECT * FROM game_tb WHERE creator_username = $1", [verifyToken.username])
-            return {userInfo: userInfo.rows[0], allGamesCreatedInfo:allGamesCreated.rows}
+            const userNotification = await pool.query("SELECT * FROM notification_tb WHERE username = $1", [verifyToken.username])
+            return {userInfo: userInfo.rows[0], allGamesCreatedInfo:allGamesCreated.rows, userNotification: userNotification.rows}
         } catch (error) {
             return new Error("An error occured")
         }
@@ -188,9 +189,18 @@ export class UserS {
     const updatePassword = await pool.query("UPDATE user_tb SET password = $1 WHERE email = $2", [hashNewPassword, email])
   
   } catch (error) {
-    console.log(error)
+
      return new Error("An error occured")
   }
     
   }
+  static async updateNotificationViewed(username:string) {
+    try {
+      const notificationViewedUpdate = await pool.query("UPDATE notification_tb SET viewed = $1 WHERE username = $2", [true, username])
+      return {updated:true}
+    } catch (error) {
+      return new Error("An error occured")
+    }
+  }
+
 }

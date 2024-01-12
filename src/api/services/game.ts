@@ -20,6 +20,7 @@ export class GAMES {
 
             const createdGameQuery = "SELECT game_name, player_username, game_id  FROM game_tb WHERE game_name = $1 AND creator_username = $2"
             const getCreatedGame = await pool.query(createdGameQuery, [body.game_name, body.username])
+            const nofication = await pool.query("INSERT INTO notification_tb(username, notification, game_title, game_id, viewed) VALUES($1, $2, $3, $4, $5)", [body.player_username, `@${body.username} added you as a versus`, body.game_name, gameId, false])
             return getCreatedGame.rows
         } catch (error:any) {
               return new Error("An error occured, creating new game");

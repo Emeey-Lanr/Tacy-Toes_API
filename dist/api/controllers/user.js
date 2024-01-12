@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.getUserDetails = exports.verifyEmail = exports.signinC = exports.signupC = void 0;
+exports.updateViewedNotification = exports.changePassword = exports.getUserDetails = exports.verifyEmail = exports.signinC = exports.signupC = void 0;
 const user_1 = require("../services/user");
 const response_1 = require("../utils/response");
 const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -76,8 +76,20 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return (0, response_1.succesResponse)(res, 200, "", "Password Updated Successfully");
     }
     catch (error) {
-        console.log(error);
         return (0, response_1.errorResponse)(res, 404, "An error occured updating user's password");
     }
 });
 exports.changePassword = changePassword;
+const updateViewedNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const update = yield user_1.UserS.updateNotificationViewed(`${req.body.username}`);
+        if (update instanceof Error) {
+            return (0, response_1.errorResponse)(res, 404, "An error occured");
+        }
+        return (0, response_1.succesResponse)(res, 200, update.updated, "Updated successfully");
+    }
+    catch (error) {
+        (0, response_1.errorResponse)(res, 4000, "An error occured");
+    }
+});
+exports.updateViewedNotification = updateViewedNotification;

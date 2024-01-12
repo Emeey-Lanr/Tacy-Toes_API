@@ -68,7 +68,19 @@ export const changePassword = async (req: Request, res: Response) => {
         }
         return succesResponse(res, 200, "", "Password Updated Successfully")
     } catch (error) {
-        console.log(error)
+      
      return errorResponse(res, 404, "An error occured updating user's password");
  }   
+}
+
+export const updateViewedNotification = async (req:Request, res:Response) => {
+    try {
+        const update = await UserS.updateNotificationViewed(`${req.body.username}`)
+        if (update instanceof Error) {
+            return errorResponse(res, 404, "An error occured")
+        }
+        return succesResponse(res, 200, update.updated, "Updated successfully")
+    } catch (error) {
+        errorResponse(res, 4000, "An error occured")
+    }
 }

@@ -19,6 +19,14 @@ io.on("connection", (socket) => {
     const joinRoom = (roomId) => {
         socket.join(roomId);
     };
+    socket.on("joinSocketApp", (data) => {
+        console.log(data, 'join socket app');
+        joinRoom(data.username);
+    });
+    socket.on("sendNotification", (data) => {
+        console.log(data.info, "na info be this");
+        io.sockets.to(`${data.info.player_username}`).emit(`incomingNotification`, { notification: { username: data.info.player_username, notification: `@${data.info.username} added you as a versus`, game_title: data.info.game_name, game_id: data.game_id, viewed: false } });
+    });
     socket.on("joinGame", (data) => {
         // Join room for different users and the same emiting of message
         joinRoom(`${data.isOwner ? data.gameDetails.creator_username : data.gameDetails.player_username}`);

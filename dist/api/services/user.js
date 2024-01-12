@@ -136,7 +136,8 @@ class UserS {
                 }
                 const userInfo = yield db_1.pool.query("SELECT  id, email, username, phone_number, img_url, is_verified, has_paid, payment_type FROM user_tb WHERE username = $1", [verifyToken.username]);
                 const allGamesCreated = yield db_1.pool.query("SELECT * FROM game_tb WHERE creator_username = $1", [verifyToken.username]);
-                return { userInfo: userInfo.rows[0], allGamesCreatedInfo: allGamesCreated.rows };
+                const userNotification = yield db_1.pool.query("SELECT * FROM notification_tb WHERE username = $1", [verifyToken.username]);
+                return { userInfo: userInfo.rows[0], allGamesCreatedInfo: allGamesCreated.rows, userNotification: userNotification.rows };
             }
             catch (error) {
                 return new Error("An error occured");
@@ -155,7 +156,17 @@ class UserS {
                 const updatePassword = yield db_1.pool.query("UPDATE user_tb SET password = $1 WHERE email = $2", [hashNewPassword, email]);
             }
             catch (error) {
-                console.log(error);
+                return new Error("An error occured");
+            }
+        });
+    }
+    static updateNotificationViewed(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const notificationViewedUpdate = yield db_1.pool.query("UPDATE notification_tb SET viewed = $1 WHERE username = $2", [true, username]);
+                return { updated: true };
+            }
+            catch (error) {
                 return new Error("An error occured");
             }
         });

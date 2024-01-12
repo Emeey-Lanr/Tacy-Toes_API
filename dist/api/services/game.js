@@ -30,6 +30,7 @@ class GAMES {
                 const createNewGame = yield db_1.pool.query(createGameQuery, [body.username, body.email, body.game_name, body.player_username, gameId, 0, 0, false]);
                 const createdGameQuery = "SELECT game_name, player_username, game_id  FROM game_tb WHERE game_name = $1 AND creator_username = $2";
                 const getCreatedGame = yield db_1.pool.query(createdGameQuery, [body.game_name, body.username]);
+                const nofication = yield db_1.pool.query("INSERT INTO notification_tb(username, notification, game_title, game_id, viewed) VALUES($1, $2, $3, $4, $5)", [body.player_username, `@${body.username} added you as a versus`, body.game_name, gameId, false]);
                 return getCreatedGame.rows;
             }
             catch (error) {

@@ -7,5 +7,6 @@ exports.userC = {
     signinC: user_1.signinC,
     verifyEmail: user_1.verifyEmail,
     getUserDetails: user_1.getUserDetails,
-    changePassword: user_1.changePassword
+    changePassword: user_1.changePassword,
+    updateViewedNotification: user_1.updateViewedNotification
 };
