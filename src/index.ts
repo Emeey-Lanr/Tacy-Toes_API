@@ -22,12 +22,11 @@ io.on("connection", (socket: Socket) => {
         socket.join(roomId)
     }
     socket.on("joinSocketApp", (data:{username:string}) => {
-         console.log(data, 'join socket app')
         joinRoom(data.username)
     });
     
     socket.on("sendNotification", (data:any) => {
-       console.log(data.info, "na info be this")
+    
         io.sockets.to(`${data.info.player_username}`).emit(`incomingNotification`, {notification:{username:data.info.player_username,  notification:`@${data.info.username} added you as a versus`, game_title:data.info.game_name, game_id:data.game_id, viewed:false}});
     })
 
@@ -57,7 +56,7 @@ io.on("connection", (socket: Socket) => {
         // if the error is true, then there will be no data
         // but if the error is false, there will be data
         if (!gameDetails.error) {
-            console.log(gameDetails.gameData)
+      
           io.sockets.to(`${startId}`).emit("changePhase", { start: true, gameInfo:gameDetails });
         }  
      });
@@ -65,7 +64,7 @@ io.on("connection", (socket: Socket) => {
     socket.on("playGame", (data:playGameClientData) => {
         const { signatureSign, arrayPositionId, isOwner, creator, versus, socketId, gameId } = data
         const game = SocketLogicF.playGame(isOwner, creator, versus, gameId, arrayPositionId, signatureSign)
-            console.log(game)
+       
              // meaning no winner has occured, cause it only changes from
             // null to either true or false, and if it's false
             // if it's true there a winner,

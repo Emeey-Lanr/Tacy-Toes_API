@@ -8,5 +8,8 @@ exports.userC = {
     verifyEmail: user_1.verifyEmail,
     getUserDetails: user_1.getUserDetails,
     changePassword: user_1.changePassword,
+    verifyResetForgotPasssord: user_1.verifyResetForgotPasssord,
+    verifyForgotPasswordToken: user_1.verifyForgotPasswordToken,
+    newForgotPassword: user_1.newForgotPassword,
     updateViewedNotification: user_1.updateViewedNotification
 };

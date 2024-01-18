@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateViewedNotification = exports.changePassword = exports.getUserDetails = exports.verifyEmail = exports.signinC = exports.signupC = void 0;
+exports.updateViewedNotification = exports.newForgotPassword = exports.verifyForgotPasswordToken = exports.verifyResetForgotPasssord = exports.changePassword = exports.getUserDetails = exports.verifyEmail = exports.signinC = exports.signupC = void 0;
 const user_1 = require("../services/user");
 const response_1 = require("../utils/response");
 const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -80,6 +80,48 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.changePassword = changePassword;
+const verifyResetForgotPasssord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.body);
+        const verificationToReset = yield user_1.UserS.verifyResetForgotPasssord(`${req.body.emailOrUsernameData}`);
+        if (verificationToReset instanceof Error) {
+            return (0, response_1.errorResponse)(res, 404, `${verificationToReset.message}`);
+        }
+        return (0, response_1.succesResponse)(res, 200, verificationToReset, "Email sent successfully");
+    }
+    catch (error) {
+        return (0, response_1.errorResponse)(res, 400, "An error occured");
+    }
+});
+exports.verifyResetForgotPasssord = verifyResetForgotPasssord;
+const verifyForgotPasswordToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        const token = (_b = req.headers.authorization) === null || _b === void 0 ? void 0 : _b.split(" ")[1];
+        const verifyToken = yield user_1.UserS.verifyForgotPasswordToken(`${token}`);
+        if (verifyToken instanceof Error) {
+            return (0, response_1.errorResponse)(res, 404, verifyToken.message);
+        }
+        return (0, response_1.succesResponse)(res, 200, verifyToken, "Verification Succesfull");
+    }
+    catch (error) {
+        return (0, response_1.errorResponse)(res, 400, "An error occured");
+    }
+});
+exports.verifyForgotPasswordToken = verifyForgotPasswordToken;
+const newForgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const reset = yield user_1.UserS.newForgotPassword(`${req.body.userDetails.email}`, `${req.body.userDetails.username}`, `${req.body.password}`);
+        if (reset instanceof Error) {
+            return (0, response_1.errorResponse)(res, 404, "An error occured");
+        }
+        return (0, response_1.succesResponse)(res, 200, "Password updated", "Password updated successfully");
+    }
+    catch (error) {
+        return (0, response_1.errorResponse)(res, 400, "An error occured");
+    }
+});
+exports.newForgotPassword = newForgotPassword;
 const updateViewedNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const update = yield user_1.UserS.updateNotificationViewed(`${req.body.username}`);

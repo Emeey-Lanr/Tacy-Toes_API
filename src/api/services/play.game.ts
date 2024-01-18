@@ -35,7 +35,6 @@ export  class PlayGameS {
 
 
         } catch (error: any) {
-            console.log(error)
             return new Error(error.message)
         }
         

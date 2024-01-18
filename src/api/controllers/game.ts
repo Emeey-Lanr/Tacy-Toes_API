@@ -28,7 +28,6 @@ export const deleteGame = async (req:Request, res:Response) => {
 }
 export const getCurrentGame = async (req:Request, res:Response) => {
     try {
-        console.log(req.headers.authorization?.split(" ")[1].split("-"))
         const currentGame = await GAMES.getCurrentGame(
           `${req.headers.authorization?.split(" ")[1].split("-")[0]}`,
           `${req.headers.authorization?.split(" ")[1].split("-")[1]}`
@@ -36,7 +35,7 @@ export const getCurrentGame = async (req:Request, res:Response) => {
         if (currentGame instanceof Error) {
             return errorResponse(res, 400, `${currentGame.message}`)
         }
-        console.log(currentGame)
+        
         return succesResponse(res, 200, currentGame, 'Data gotten succesfully')
 
     } catch (error) {

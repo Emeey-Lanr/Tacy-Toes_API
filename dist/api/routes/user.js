@@ -22,4 +22,7 @@ exports.userRoute.post("/signin", index_user_1.userC.signinC);
 exports.userRoute.get("/getUser/:id", index_user_1.userC.getUserDetails);
 exports.userRoute.put("/verify/email/:id", index_user_1.userC.verifyEmail);
 exports.userRoute.put("/changePassword", index_user_1.userC.changePassword);
+exports.userRoute.post("/verifyForgotPassword", index_user_1.userC.verifyResetForgotPasssord);
+exports.userRoute.get("/verifyFogotPasswordToken", index_user_1.userC.verifyForgotPasswordToken);
+exports.userRoute.put("/newForgotPassword", index_user_1.userC.newForgotPassword);
 exports.userRoute.put("/updateNotificationViewed", index_user_1.userC.updateViewedNotification);

@@ -61,7 +61,7 @@ export class SocketLogicF {
     }
 
     static playGame(isOwner:number, creator:string, versus:string, gameId:string, arrayPositionId:number, signatureSign:string ) {
-        console.log(isOwner, creator, versus, gameId, arrayPositionId, signatureSign)
+      
         // find the game
         let userCurrentGame = gameBox.find((value)=> value.creator === creator && value.versus === versus && value.gameId === gameId )
         //  creator = 0

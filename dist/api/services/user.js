@@ -160,6 +160,54 @@ class UserS {
             }
         });
     }
+    static verifyResetForgotPasssord(emailOrUsernameData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const emailORUsername = yield user_1.UserH.checkIfEmailOrUsername(emailOrUsernameData);
+                const findUser = yield db_1.pool.query(`SELECT email, username FROM user_tb WHERE ${emailORUsername} = $1`, [emailOrUsernameData]);
+                if (findUser.rows.length < 1) {
+                    return new Error(`Invalid ${emailORUsername}`);
+                }
+                console.log(findUser.rows[0]);
+                const createPasswordResetToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ email: `${findUser.rows[0].email}`, username: `${findUser.rows[0].username}` }, '1hr');
+                let mail = yield email_1.Email.passwordResetEmail(`${findUser.rows[0].username}`, `${createPasswordResetToken}`);
+                let sendEmail = yield user_1.UserH.sendEmail(`${mail}`, `${findUser.rows[0].email}`, `${mail}`);
+                if (sendEmail instanceof Error) {
+                    return new Error("Try again, an error occured");
+                }
+                let successMailMessage = `A password reset link  has been sent to your email, @${findUser.rows[0].email} it expires in 1hr`;
+                return successMailMessage;
+            }
+            catch (error) {
+                return new Error(`An error occured`);
+            }
+        });
+    }
+    static verifyForgotPasswordToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const verifyToken = yield token_generator_1.TokenGenerator.decodeJwt(`${token}`);
+                if (verifyToken instanceof Error) {
+                    return new Error("Invalid Bypass");
+                }
+                return verifyToken;
+            }
+            catch (error) {
+                return new Error("An error occured");
+            }
+        });
+    }
+    static newForgotPassword(email, username, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const newHashedPassword = yield user_1.UserH.hashPassword(password);
+                const updatePassword = yield db_1.pool.query("UPDATE user_tb SET password = $1 WHERE email = $2 AND username = $3", [newHashedPassword, email, username]);
+            }
+            catch (error) {
+                return new Error("An error occured");
+            }
+        });
+    }
     static updateNotificationViewed(username) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

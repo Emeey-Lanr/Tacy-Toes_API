@@ -1,6 +1,8 @@
 import {
     signupC, signinC, verifyEmail,
-    getUserDetails, changePassword, updateViewedNotification
+    getUserDetails, changePassword,
+    verifyResetForgotPasssord, verifyForgotPasswordToken, newForgotPassword, updateViewedNotification
+
 } from "./user";
 export const userC = {
     signupC,
@@ -8,6 +10,9 @@ export const userC = {
     verifyEmail,
     getUserDetails,
     changePassword,
+    verifyResetForgotPasssord,
+    verifyForgotPasswordToken,
+    newForgotPassword,
     updateViewedNotification
     
 }

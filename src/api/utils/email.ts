@@ -29,9 +29,32 @@ export class Email {
 
         </div>
      </div>`
-
+    
   
     return email
-  };
+    };
+    static async passwordResetEmail(username:string,token:string) {
+        let email = `
+         <div style="width: 500px; margin:  0 auto;">
+        <h1 style="font-family: sans-serif; text-align:center; color: black; ">Tacky Toes</h1>
+
+        <div>
+
+            <div style="display: flex; font-size:1rem;  margin:  0 auto; justify-content: center; align-items: center;">
+               Click on the button below to reset your forgot password
+            </div>
+           <a style="text-decoration:none;" href="http://localhost:3000/login/reset/${token}">
+               <div style="width:300px;height:40px; position:relative; background:black;color:white; display:flex; justify-content:center; align-items:center; font-family:sans-serif;
+               border-radius:3px; margin:20px auto;">
+                    <p style="position:absolute; left:0; top:0; bottom:0; right:0;">proceed</p> 
+               </div>
+              
+            </a>
+
+        </div>
+     </div>
+        `
+        return email
+    }  
 }
 
