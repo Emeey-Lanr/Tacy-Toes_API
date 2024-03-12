@@ -40,14 +40,12 @@ const deleteGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.deleteGame = deleteGame;
 const getCurrentGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _a, _b;
     try {
-        console.log((_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1].split("-"));
-        const currentGame = yield game_1.GAMES.getCurrentGame(`${(_b = req.headers.authorization) === null || _b === void 0 ? void 0 : _b.split(" ")[1].split("-")[0]}`, `${(_c = req.headers.authorization) === null || _c === void 0 ? void 0 : _c.split(" ")[1].split("-")[1]}`);
+        const currentGame = yield game_1.GAMES.getCurrentGame(`${(_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1].split("-")[0]}`, `${(_b = req.headers.authorization) === null || _b === void 0 ? void 0 : _b.split(" ")[1].split("-")[1]}`);
         if (currentGame instanceof Error) {
             return (0, response_1.errorResponse)(res, 400, `${currentGame.message}`);
         }
-        console.log(currentGame);
         return (0, response_1.succesResponse)(res, 200, currentGame, 'Data gotten succesfully');
     }
     catch (error) {

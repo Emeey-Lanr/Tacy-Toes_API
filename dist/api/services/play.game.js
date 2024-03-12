@@ -42,7 +42,6 @@ class PlayGameS {
                 return { isOwner, gameDetails: checkifGameExist.rows[0] };
             }
             catch (error) {
-                console.log(error);
                 return new Error(error.message);
             }
         });

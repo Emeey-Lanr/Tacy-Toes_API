@@ -98,7 +98,6 @@ class UserS {
                 }
             }
             catch (error) {
-                console.log(error.message);
                 return new Error("An error occured logining in");
             }
         });
@@ -108,7 +107,6 @@ class UserS {
             try {
                 let payloadVerificationToken = emailToken[0] + emailToken[1] + emailToken[2] + emailToken[3];
                 const verifyToken = yield token_generator_1.TokenGenerator.decodeJwt(jwtToken);
-                console.log(verifyToken, payloadVerificationToken);
                 if (verifyToken instanceof Error) {
                     return new Error(verifyToken.message);
                 }
@@ -168,7 +166,6 @@ class UserS {
                 if (findUser.rows.length < 1) {
                     return new Error(`Invalid ${emailORUsername}`);
                 }
-                console.log(findUser.rows[0]);
                 const createPasswordResetToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ email: `${findUser.rows[0].email}`, username: `${findUser.rows[0].username}` }, '1hr');
                 let mail = yield email_1.Email.passwordResetEmail(`${findUser.rows[0].username}`, `${createPasswordResetToken}`);
                 let sendEmail = yield user_1.UserH.sendEmail(`${mail}`, `${findUser.rows[0].email}`, `${mail}`);

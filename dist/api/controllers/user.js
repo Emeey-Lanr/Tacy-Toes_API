@@ -68,7 +68,6 @@ exports.getUserDetails = getUserDetails;
 const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { old_password, new_password, email } = req.body;
     try {
-        console.log(req.body);
         const changeUserPassword = yield user_1.UserS.changePassword(old_password, new_password, email);
         if (changeUserPassword instanceof Error) {
             return (0, response_1.errorResponse)(res, 404, changeUserPassword.message);
@@ -82,7 +81,6 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.changePassword = changePassword;
 const verifyResetForgotPasssord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.body);
         const verificationToReset = yield user_1.UserS.verifyResetForgotPasssord(`${req.body.emailOrUsernameData}`);
         if (verificationToReset instanceof Error) {
             return (0, response_1.errorResponse)(res, 404, `${verificationToReset.message}`);
