@@ -65,6 +65,7 @@ export class UserS {
         redirectURL: `${`/email/verification/${jwtToken}?email=${email}`}`,
       };
     } catch (error: any) {
+      console.log(error.message)
       return new Error("Unable to register user");
     }
   }

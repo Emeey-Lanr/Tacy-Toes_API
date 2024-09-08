@@ -53,6 +53,7 @@ class UserS {
                 };
             }
             catch (error) {
+                console.log(error.message);
                 return new Error("Unable to register user");
             }
         });
