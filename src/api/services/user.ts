@@ -31,39 +31,46 @@ export class UserS {
         phone_number,
         hashPassword,
         "",
-        false,
+        true,
         username === "Emeey_Lanr" ? true : false,
         `${username === "Emeey_Lanr" ? "year" : "none"}`,
       ]);
+      // Don't forget to change the is verified is false when nodemialer works
+      
+      // const emailToken = await TokenGenerator.emailToken();
 
-      const emailToken = await TokenGenerator.emailToken();
+      // const jwtToken = await TokenGenerator.jwtTokenGenerator(
+      //   { email, username, emailToken },
+      //   "1hr"
+      // );
 
-      const jwtToken = await TokenGenerator.jwtTokenGenerator(
-        { email, username, emailToken },
-        "1hr"
+      // const emailToBeSent = await Email.emailVerification(
+      //   `${jwtToken}`,
+      //   emailToken,
+      //   email
+      // );
+
+      // const sendMail = await UserH.sendEmail(
+      //   `${emailToken}`,
+      //   email,
+      //   `${emailToBeSent}`
+      // );
+      // if (sendMail instanceof Error) {
+      //   return new Error(
+      //     "An error occured sending email verification, proceed to login"
+      //   );
+      // }
+
+      // return {
+      //   token: jwtToken,
+      //   redirectURL: `${`/email/verification/${jwtToken}?email=${email}`}`,
+      // };
+
+       const generateToken = await TokenGenerator.jwtTokenGenerator(
+         { email, username },
+         "7days"
       );
-
-      const emailToBeSent = await Email.emailVerification(
-        `${jwtToken}`,
-        emailToken,
-        email
-      );
-
-      const sendMail = await UserH.sendEmail(
-        `${emailToken}`,
-        email,
-        `${emailToBeSent}`
-      );
-      if (sendMail instanceof Error) {
-        return new Error(
-          "An error occured sending email verification, proceed to login"
-        );
-      }
-
-      return {
-        token: jwtToken,
-        redirectURL: `${`/email/verification/${jwtToken}?email=${email}`}`,
-      };
+      return {token:generateToken, username, verified:true}
     } catch (error: any) {
       console.log(error.message)
       return new Error("Unable to register user");
@@ -87,7 +94,7 @@ export class UserS {
               return new Error("Invalid Password")
           }
           
-            const emailToken = await TokenGenerator.emailToken();
+            const OTP = await TokenGenerator.emailOTP();
          let tokenDetails = validateUsernameEmail.rows[0].is_verified
            ? {
                email: validateUsernameEmail.rows[0].email,
@@ -96,7 +103,7 @@ export class UserS {
            : {
                email: validateUsernameEmail.rows[0].email,
                  username: validateUsernameEmail.rows[0].username,
-                  emailToken
+                  OTP
              };
             const jwtToken = await TokenGenerator.jwtTokenGenerator( tokenDetails, `${validateUsernameEmail.rows[0].is_verified ? '7days' : '1hr'}` );
 
@@ -104,11 +111,11 @@ export class UserS {
           if (!validateUsernameEmail.rows[0].is_verified) {
             const emailToBeSent = await Email.emailVerification(
               `${jwtToken}`,
-              emailToken,
+              OTP,
               `${validateUsernameEmail.rows[0].email}`
               );
               const sendMail = await UserH.sendEmail(
-                `${emailToken}`,
+                `${OTP}`,
                 `${validateUsernameEmail.rows[0].email}`,
                 `${emailToBeSent}`
               );

@@ -25,7 +25,7 @@ export  class TokenGenerator {
       return new Error("Invalid Token")
     }
   }
-    static async emailToken() {
+    static async emailOTP() {
          let token =
            String(Math.floor(Math.random() * 10)) +
            String(Math.floor(Math.random() * 10)) +

@@ -18,6 +18,7 @@ const signupC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (registerUser instanceof Error) {
             return (0, response_1.errorResponse)(res, 400, registerUser.message);
         }
+        console.log(registerUser);
         return (0, response_1.succesResponse)(res, 201, registerUser, 'Registartion Sucessfull');
     }
     catch (error) {

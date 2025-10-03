@@ -9,6 +9,7 @@ export const signupC = async (req: Request, res: Response) => {
         if (registerUser instanceof Error) {
             return errorResponse(res, 400, registerUser.message)
         }
+        console.log(registerUser)
         return succesResponse(res, 201, registerUser,'Registartion Sucessfull')
     } catch (error:any) {
          return errorResponse(res, 400, error.message);

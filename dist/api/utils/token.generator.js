@@ -38,7 +38,7 @@ class TokenGenerator {
             }
         });
     }
-    static emailToken() {
+    static emailOTP() {
         return __awaiter(this, void 0, void 0, function* () {
             let token = String(Math.floor(Math.random() * 10)) +
                 String(Math.floor(Math.random() * 10)) +

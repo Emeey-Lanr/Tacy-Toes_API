@@ -36,21 +36,37 @@ class UserS {
                     phone_number,
                     hashPassword,
                     "",
-                    false,
+                    true,
                     username === "Emeey_Lanr" ? true : false,
                     `${username === "Emeey_Lanr" ? "year" : "none"}`,
                 ]);
-                const emailToken = yield token_generator_1.TokenGenerator.emailToken();
-                const jwtToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ email, username, emailToken }, "1hr");
-                const emailToBeSent = yield email_1.Email.emailVerification(`${jwtToken}`, emailToken, email);
-                const sendMail = yield user_1.UserH.sendEmail(`${emailToken}`, email, `${emailToBeSent}`);
-                if (sendMail instanceof Error) {
-                    return new Error("An error occured sending email verification, proceed to login");
-                }
-                return {
-                    token: jwtToken,
-                    redirectURL: `${`/email/verification/${jwtToken}?email=${email}`}`,
-                };
+                // Don't forget to change the is verified is false when nodemialer works
+                // const emailToken = await TokenGenerator.emailToken();
+                // const jwtToken = await TokenGenerator.jwtTokenGenerator(
+                //   { email, username, emailToken },
+                //   "1hr"
+                // );
+                // const emailToBeSent = await Email.emailVerification(
+                //   `${jwtToken}`,
+                //   emailToken,
+                //   email
+                // );
+                // const sendMail = await UserH.sendEmail(
+                //   `${emailToken}`,
+                //   email,
+                //   `${emailToBeSent}`
+                // );
+                // if (sendMail instanceof Error) {
+                //   return new Error(
+                //     "An error occured sending email verification, proceed to login"
+                //   );
+                // }
+                // return {
+                //   token: jwtToken,
+                //   redirectURL: `${`/email/verification/${jwtToken}?email=${email}`}`,
+                // };
+                const generateToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator({ email, username }, "7days");
+                return { token: generateToken, username, verified: true };
             }
             catch (error) {
                 console.log(error.message);
@@ -70,7 +86,7 @@ class UserS {
                 if (!validatePassword) {
                     return new Error("Invalid Password");
                 }
-                const emailToken = yield token_generator_1.TokenGenerator.emailToken();
+                const OTP = yield token_generator_1.TokenGenerator.emailOTP();
                 let tokenDetails = validateUsernameEmail.rows[0].is_verified
                     ? {
                         email: validateUsernameEmail.rows[0].email,
@@ -79,12 +95,12 @@ class UserS {
                     : {
                         email: validateUsernameEmail.rows[0].email,
                         username: validateUsernameEmail.rows[0].username,
-                        emailToken
+                        OTP
                     };
                 const jwtToken = yield token_generator_1.TokenGenerator.jwtTokenGenerator(tokenDetails, `${validateUsernameEmail.rows[0].is_verified ? '7days' : '1hr'}`);
                 if (!validateUsernameEmail.rows[0].is_verified) {
-                    const emailToBeSent = yield email_1.Email.emailVerification(`${jwtToken}`, emailToken, `${validateUsernameEmail.rows[0].email}`);
-                    const sendMail = yield user_1.UserH.sendEmail(`${emailToken}`, `${validateUsernameEmail.rows[0].email}`, `${emailToBeSent}`);
+                    const emailToBeSent = yield email_1.Email.emailVerification(`${jwtToken}`, OTP, `${validateUsernameEmail.rows[0].email}`);
+                    const sendMail = yield user_1.UserH.sendEmail(`${OTP}`, `${validateUsernameEmail.rows[0].email}`, `${emailToBeSent}`);
                     if (sendMail instanceof Error) {
                         return new Error("An error occured sending email verification, proceed to login");
                     }
